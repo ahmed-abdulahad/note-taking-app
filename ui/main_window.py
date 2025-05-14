@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QListWidget, QPushButton, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QListWidget, QPushButton, QWidget, QHBoxLayout, QInputDialog
+from models.note import Note
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,6 +23,9 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(hbox)
 
         self.add_note_button.clicked.connect(self.add_note) 
-    
+
     def add_note(self):
-        pass
+        note_title, confirmation = QInputDialog.getText(self, "New Note", "Enter note title:")
+        if note_title and confirmation:
+            new_note = Note(note_title, "")
+            self.notes_list.addItem(new_note.title)
