@@ -4,7 +4,7 @@ class Note:
     def __init__(self, title, content, created_at=None):
         self.title = title
         self.content = content
-        self.created_at = datetime.now()
+        self.created_at = created_at or datetime.now().strftime("%d.%m.%Y %H:%M")
     
     def to_dict(self):
         return {
