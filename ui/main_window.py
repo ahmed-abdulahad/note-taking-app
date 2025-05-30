@@ -10,6 +10,8 @@ class MainWindow(QMainWindow):
         self.editor = QTextEdit(self)
         self.notes_list = QListWidget(self)
         self.add_note_button = QPushButton("Add", self)
+        self.notes = []
+        self.load_notes()
         self.initUI()
 
     def initUI(self):
@@ -43,9 +45,34 @@ class MainWindow(QMainWindow):
             with open(file_path, "r") as data:
                 notes_data = json.load(data)
         else:
-            notes_data = []
+            return
         
         notes_data.append(note.to_dict())
 
         with open(file_path, "w") as data:
             json.dump(notes_data, data, indent=4)
+
+    def load_notes(self):
+        file_path = os.path.join("data", "notes.json")
+
+        if os.path.getsize(file_path) > 0:
+            with open(file_path, "r") as data:
+                notes_data = json.load(data)
+        else:
+            return
+
+        for data in notes_data:
+            note = Note.from_dict(data)
+            self.notes.append(note)
+            self.notes_list.addItem(note.title)
+        
+        self.notes_list.itemClicked.connect(self.display_content)
+    
+    def display_content(self, item):
+        selected_note = item.text()
+
+        for note in self.notes:
+            if note.title == selected_note:
+                self.editor.setPlainText(note.content)
+                break
+        
