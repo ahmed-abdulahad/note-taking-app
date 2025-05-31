@@ -11,7 +11,9 @@ class MainWindow(QMainWindow):
         self.notes_list = QListWidget(self)
         self.add_note_button = QPushButton("Add", self)
         self.notes = []
+        self.file_path = os.path.join("data", "notes.json")
         self.load_notes()
+        self.selected_note = None
         self.initUI()
 
     def initUI(self):
@@ -27,6 +29,8 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(hbox)
 
         self.add_note_button.clicked.connect(self.add_note)
+        self.notes_list.itemClicked.connect(self.display_content)
+        self.editor.textChanged.connect(self.save_content)
 
     def add_note(self):
         note_title, confirmation = QInputDialog.getText(self, "New Note", "Enter note title:")
@@ -39,24 +43,20 @@ class MainWindow(QMainWindow):
             self.save_note(new_note)
     
     def save_note(self, note):
-        file_path = os.path.join("data", "notes.json")
-
-        if os.path.getsize(file_path) > 0:
-            with open(file_path, "r") as data:
+        if os.path.getsize(self.file_path) > 0:
+            with open(self.file_path, "r") as data:
                 notes_data = json.load(data)
         else:
             return
         
         notes_data.append(note.to_dict())
 
-        with open(file_path, "w") as data:
+        with open(self.file_path, "w") as data:
             json.dump(notes_data, data, indent=4)
 
     def load_notes(self):
-        file_path = os.path.join("data", "notes.json")
-
-        if os.path.getsize(file_path) > 0:
-            with open(file_path, "r") as data:
+        if os.path.getsize(self.file_path) > 0:
+            with open(self.file_path, "r") as data:
                 notes_data = json.load(data)
         else:
             return
@@ -66,13 +66,25 @@ class MainWindow(QMainWindow):
             self.notes.append(note)
             self.notes_list.addItem(note.title)
         
-        self.notes_list.itemClicked.connect(self.display_content)
-    
     def display_content(self, item):
-        selected_note = item.text()
+        self.selected_note = item.text()
 
         for note in self.notes:
-            if note.title == selected_note:
+            if note.title == self.selected_note:
                 self.editor.setPlainText(note.content)
                 break
         
+        self.editor.textChanged.connect(self.save_content)
+    
+    def save_content(self):
+        new_content = self.editor.toPlainText()
+
+        for note in self.notes:
+            if note.title == self.selected_note:
+                note.content = new_content
+                break
+        
+        notes_data = [note.to_dict() for note in self.notes]
+
+        with open(self.file_path, "w") as data:
+            json.dump(notes_data, data, indent=4)
