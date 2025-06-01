@@ -10,6 +10,7 @@ class MainWindow(QMainWindow):
         self.editor = QTextEdit(self)
         self.notes_list = QListWidget(self)
         self.add_note_button = QPushButton("Add", self)
+        self.delete_note_button = QPushButton("Delete", self)
         self.notes = []
         self.file_path = os.path.join("data", "notes.json")
         self.load_notes()
@@ -25,10 +26,12 @@ class MainWindow(QMainWindow):
         hbox.addWidget(self.editor, 2)
         hbox.addWidget(self.notes_list, 1)
         hbox.addWidget(self.add_note_button)
+        hbox.addWidget(self.delete_note_button)
 
         central_widget.setLayout(hbox)
 
         self.add_note_button.clicked.connect(self.add_note)
+        self.delete_note_button.clicked.connect(self.delete_note)
         self.notes_list.itemClicked.connect(self.display_content)
         self.editor.textChanged.connect(self.save_content)
 
@@ -73,8 +76,6 @@ class MainWindow(QMainWindow):
             if note.title == self.selected_note:
                 self.editor.setPlainText(note.content)
                 break
-        
-        self.editor.textChanged.connect(self.save_content)
     
     def save_content(self):
         new_content = self.editor.toPlainText()
@@ -88,3 +89,20 @@ class MainWindow(QMainWindow):
 
         with open(self.file_path, "w") as data:
             json.dump(notes_data, data, indent=4)
+
+    def delete_note(self):
+        for note in self.notes:
+            if note.title == self.selected_note:
+                self.notes.remove(note)
+                break
+
+        notes_data = [note.to_dict() for note in self.notes]
+
+        with open(self.file_path, "w") as data:
+            json.dump(notes_data, data, indent=4)
+
+        self.notes_list.clear()
+        self.editor.clear()
+        
+        for note in self.notes:
+            self.notes_list.addItem(note.title)
