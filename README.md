@@ -25,6 +25,7 @@ note-taking-app/
 │   └── note.py
 ├── data/
 │   └── notes.json
+├── assets/
 └── requirements.txt
 ```
 
@@ -70,6 +71,14 @@ This is a 1 – 2 week learning project.
 6. **Run the app:**
 
     ```python main.py```
+
+## 🎨 Assets
+
+The project uses the following asset:
+
+- `assets/note-taking-app_icon.png`: Application window icon shown in the title bar.
+
+All assets are stored in the `assets/` directory.
 
 ## 🔖 License
 
