@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QTextEdit, QListWidget, QPushButton, QWidget, QHBoxLayout, QInputDialog
+from PyQt5.QtGui import QIcon
 from models.note import Note
 import os
 import json
@@ -7,6 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("note-taking-app")
+        self.setWindowIcon(QIcon("assets/note-taking-app_icon.png"))
         self.editor = QTextEdit(self)
         self.notes_list = QListWidget(self)
         self.add_note_button = QPushButton("Add", self)
@@ -29,6 +31,33 @@ class MainWindow(QMainWindow):
         hbox.addWidget(self.delete_note_button)
 
         central_widget.setLayout(hbox)
+
+        self.setStyleSheet("""
+            QMainWindow{
+                background-color: #1a1a40;
+            }
+            QPushButton{
+                background-color: #141430;
+                color: #ffffff;
+                font-family: Arial;
+                font-size: 30px;
+                padding: 10px;
+                border-radius: 25px;
+                min-width: 100px;
+                min-height: 50px;
+            }
+            QPushButton:hover{
+                background-color: #2a2a60;
+            }
+            QListWidget, QTextEdit{
+                background-color: #2a2a60;
+                color: #ffffff;
+                font-family: Arial;
+                font-size: 30px;
+                padding: 10px 10px;
+                border: None;
+            }
+        """)
 
         self.add_note_button.clicked.connect(self.add_note)
         self.delete_note_button.clicked.connect(self.delete_note)
