@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon
 from models.note import Note
 import os
 import json
+from ui.themes import dark_theme, light_theme
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -13,10 +14,12 @@ class MainWindow(QMainWindow):
         self.notes_list = QListWidget(self)
         self.add_note_button = QPushButton("Add", self)
         self.delete_note_button = QPushButton("Delete", self)
+        self.theme_toogle_button = QPushButton(self)
         self.notes = []
         self.file_path = os.path.join("data", "notes.json")
         self.load_notes()
         self.selected_note = None
+        self.dark_mode = False
         self.initUI()
 
     def initUI(self):
@@ -29,40 +32,17 @@ class MainWindow(QMainWindow):
         hbox.addWidget(self.notes_list, 1)
         hbox.addWidget(self.add_note_button)
         hbox.addWidget(self.delete_note_button)
+        hbox.addWidget(self.theme_toogle_button)
 
         central_widget.setLayout(hbox)
 
-        self.setStyleSheet("""
-            QMainWindow{
-                background-color: #1a1a40;
-            }
-            QPushButton{
-                background-color: #141430;
-                color: #ffffff;
-                font-family: Arial;
-                font-size: 30px;
-                padding: 10px;
-                border-radius: 25px;
-                min-width: 100px;
-                min-height: 50px;
-            }
-            QPushButton:hover{
-                background-color: #2a2a60;
-            }
-            QListWidget, QTextEdit{
-                background-color: #2a2a60;
-                color: #ffffff;
-                font-family: Arial;
-                font-size: 30px;
-                padding: 10px 10px;
-                border: None;
-            }
-        """)
-
         self.add_note_button.clicked.connect(self.add_note)
         self.delete_note_button.clicked.connect(self.delete_note)
+        self.theme_toogle_button.clicked.connect(self.toggle_theme_mode)
         self.notes_list.itemClicked.connect(self.display_content)
         self.editor.textChanged.connect(self.save_content)
+
+        self.setStyleSheet(light_theme)
 
     def add_note(self):
         note_title, confirmation = QInputDialog.getText(self, "New Note", "Enter note title:")
@@ -135,3 +115,11 @@ class MainWindow(QMainWindow):
         
         for note in self.notes:
             self.notes_list.addItem(note.title)
+    
+    def toggle_theme_mode(self):
+        if not self.dark_mode:
+            self.setStyleSheet(dark_theme)
+            self.dark_mode = True
+        else:
+            self.setStyleSheet(light_theme)
+            self.dark_mode = False
