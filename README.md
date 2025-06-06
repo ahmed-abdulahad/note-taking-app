@@ -1,12 +1,11 @@
-# Note-Taking App with To-Do List
+# Note-Taking App
 
-A simple note-taking app with an integrated to-do list, built with Python and PyQt5.  
+A simple note-taking app, built with Python and PyQt5.  
 Designed to be clean, minimal, and focused on usability — perfect for personal use.
 
 ## 🚀 Features
 
 - 📝 Write and edit notes
-- ✅ Manage to-do items alongside notes
 - 💾 Local storage (JSON-based)
 - 🖥️ Built for desktop
 
@@ -21,6 +20,7 @@ note-taking-app/
 ├── venv/
 ├── ui/
 │   └── main_window.py
+│   └── themes.py
 ├── models/
 │   └── note.py
 ├── data/
@@ -74,9 +74,11 @@ This is a 1 – 2 week learning project.
 
 ## 🎨 Assets
 
-The project uses the following asset:
+The project uses the following assets:
 
-- `assets/note-taking-app_icon.png`: Application window icon shown in the title bar.
+- `assets/note-taking-app_icon.png`: Window icon shown in the title bar.
+- `assets/dark_mode_moon_icon.png`: Theme icon shown in the theme toggle button.
+- `assets/light_mode_sun_icon.png`: Theme icon shown in the theme toggle button.
 
 All assets are stored in the `assets/` directory.
 
