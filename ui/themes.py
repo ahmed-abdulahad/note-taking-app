@@ -6,7 +6,7 @@ dark_theme = """
         background-color: #141430;
         color: #ffffff;
         font-family: Arial;
-        font-size: 30px;
+        font-size: 20px;
         padding: 10px;
         border-radius: 25px;
         min-width: 100px;
@@ -19,7 +19,7 @@ dark_theme = """
         background-color: #2a2a60;
         color: #ffffff;
         font-family: Arial;
-        font-size: 30px;
+        font-size: 20px;
         padding: 10px 10px;
         border: None;
     }
@@ -33,7 +33,7 @@ light_theme = """
         background-color: #ffffff;
         color: #000000;
         font-family: Arial;
-        font-size: 30px;
+        font-size: 20px;
         padding: 10px;
         border-radius: 25px;
         min-width: 100px;
@@ -46,7 +46,7 @@ light_theme = """
         background-color: #ffffff;
         color: #000000;
         font-family: Arial;
-        font-size: 30px;
+        font-size: 20px;
         padding: 10px 10px;
         border: None;
     }
