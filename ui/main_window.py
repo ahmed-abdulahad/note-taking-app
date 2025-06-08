@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QWidget,
     QHBoxLayout,
+    QVBoxLayout,
     QInputDialog,
 )
 from PyQt5.QtGui import QIcon
@@ -49,13 +50,16 @@ class MainWindow(QMainWindow):
 
         # Layout container
         hbox = QHBoxLayout()
+        vbox = QVBoxLayout()
 
         # Add widgets with stretch factors for resizing
+        vbox.addWidget(self.add_note_button)
+        vbox.addWidget(self.delete_note_button)
+        vbox.addWidget(self.theme_toggle_button)
+        
         hbox.addWidget(self.editor, 2)
         hbox.addWidget(self.notes_list, 1)
-        hbox.addWidget(self.add_note_button)
-        hbox.addWidget(self.delete_note_button)
-        hbox.addWidget(self.theme_toggle_button)
+        hbox.addLayout(vbox)
 
         self.theme_toggle_button.setIcon(QIcon("assets/light_mode_sun_icon.png"))
 
@@ -67,6 +71,7 @@ class MainWindow(QMainWindow):
         self.theme_toggle_button.clicked.connect(self.toggle_theme_mode)
         self.notes_list.itemClicked.connect(self.display_content)
         self.editor.textChanged.connect(self.save_content)
+        self.notes_list.itemDoubleClicked.connect(self.rename_note)
 
     def add_note(self):
         """
@@ -83,7 +88,6 @@ class MainWindow(QMainWindow):
             self.notes_list.setCurrentRow(self.notes_list.count() - 1)
             self.display_content(self.notes_list.currentItem())
 
-            self.save_all_notes()
             self.editor.setDisabled(False)
 
     def load_notes(self):
@@ -127,11 +131,24 @@ class MainWindow(QMainWindow):
     def delete_note(self):
         """Remove the selected note and update the UI and storage."""
         self.notes = [note for note in self.notes if note.title != self.selected_note]
+        self.refresh_notes_list()
         self.selected_note = None
         self.editor.clear()
         self.editor.setDisabled(True)
-        self.refresh_notes_list()
-        self.save_all_notes()
+        
+    def rename_note(self):
+        note_title, confirmation = QInputDialog.getText(self, "Rename title", "Enter note title:")
+
+        if note_title and confirmation:
+            for note in self.notes:
+                if note.title == self.selected_note:
+                    note.title = note_title
+                    break
+            
+            self.refresh_notes_list()
+            self.selected_note = None
+            self.editor.clear()
+            self.editor.setDisabled(True)
 
     def save_all_notes(self):
         """Serialize all notes and save them to the JSON file."""
