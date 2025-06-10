@@ -15,7 +15,7 @@ dark_theme = """
     QPushButton:hover{
         background-color: #2a2a60;
     }
-    QListWidget, QTextEdit{
+    QListWidget, QTextEdit, QLineEdit{
         background-color: #2a2a60;
         color: #ffffff;
         font-family: Arial;
@@ -42,7 +42,7 @@ light_theme = """
     QPushButton:hover{
         background-color: #d4d4d4;
     }
-    QListWidget, QTextEdit{
+    QListWidget, QTextEdit, QLineEdit{
         background-color: #ffffff;
         color: #000000;
         font-family: Arial;
