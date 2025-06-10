@@ -38,7 +38,7 @@ note-taking-app/
 
 ## ⏳ Timeline
 
-This is a 1 – 2 week learning project.
+This is a 1 – 2 week learning project. (However I have not been consistent for various reasons...)
 
 ## 🛠️ Setting up the Environment
 
