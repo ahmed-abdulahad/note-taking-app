@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QMainWindow,
     QTextEdit,
@@ -13,6 +14,7 @@ from PyQt5.QtWidgets import (
     QInputDialog,
     QShortcut,
     QMessageBox,
+    QLineEdit,
 )
 from PyQt5.QtGui import QIcon, QKeySequence
 
@@ -33,6 +35,7 @@ class MainWindow(QMainWindow):
         self.add_note_button = QPushButton("Add", self)
         self.delete_note_button = QPushButton("Delete", self)
         self.theme_toggle_button = QPushButton(self)
+        self.search_bar = QLineEdit(self)
 
         # Shortcuts
         self.add_note_shortcut = QShortcut(QKeySequence("Ctrl+Shift+A"), self)
@@ -62,15 +65,17 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         self.setStyleSheet(light_theme)
+        self.search_bar.setPlaceholderText("Search note")
 
         # Layout container
         hbox = QHBoxLayout()
         vbox = QVBoxLayout()
 
         # Add buttons vertically
-        vbox.addWidget(self.add_note_button)
-        vbox.addWidget(self.delete_note_button)
-        vbox.addWidget(self.theme_toggle_button)
+        vbox.addWidget(self.search_bar, 1)
+        vbox.addWidget(self.add_note_button, 2)
+        vbox.addWidget(self.delete_note_button, 3)
+        vbox.addWidget(self.theme_toggle_button, 4)
 
         hbox.addWidget(self.editor, 2)
         hbox.addWidget(self.notes_list, 1)
@@ -88,6 +93,7 @@ class MainWindow(QMainWindow):
         self.notes_list.itemClicked.connect(self.display_content)
         self.editor.textChanged.connect(self.save_content)
         self.notes_list.itemDoubleClicked.connect(self.rename_note)
+        self.search_bar.returnPressed.connect(self.search_note)
 
         self.add_note_shortcut.activated.connect(self.add_note)
         self.delete_note_shortcut.activated.connect(self.delete_note)
@@ -282,6 +288,34 @@ class MainWindow(QMainWindow):
                 "Save All Notes Error",
                 f"An error occurred while saving notes.\n\n{str(e)}",
             )
+
+    def search_note(self):
+        """Search for an exact match first, then partial match."""
+        text = self.search_bar.text().strip()
+
+        if not text:
+            return
+
+        # Exact match
+        exact_match = self.notes_list.findItems(text, Qt.MatchExactly)
+        if exact_match:
+            item = exact_match[0]
+            self.notes_list.setCurrentItem(item)
+            self.display_content(item)
+            return
+
+        # Partial match
+        partial_match = self.notes_list.findItems(text, Qt.MatchContains)
+        if partial_match:
+            item = partial_match[0]
+            self.notes_list.setCurrentItem(item)
+            self.display_content(item)
+            return
+
+        # No match
+        self.notes_list.clearSelection()
+        self.editor.clear()
+        self.editor.setDisabled(True)
 
     def toggle_theme_mode(self):
         """Toggle between light and dark themes and update the UI icon."""
